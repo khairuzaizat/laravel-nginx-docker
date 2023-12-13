@@ -16,6 +16,19 @@ services:
       - ./:/var/www
     networks:
       - mynetwork
+      
+  nginx:
+    image: nginx:alpine
+    container_name: ${NGINX_HOST}
+    restart: unless-stopped
+    ports:
+      - ${NGINX_PORT_HTTP}:80
+      - ${NGINX_PORT_HTTPS}:443
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - mynetwork
 
   db:
     image: mysql:8.0
@@ -32,19 +45,6 @@ services:
       - ${DB_PORT}:3306
     volumes:
       - ./docker/mysql:/docker-entrypoint-initdb.d
-    networks:
-      - mynetwork
-
-  nginx:
-    image: nginx:alpine
-    container_name: ${NGINX_HOST}
-    restart: unless-stopped
-    ports:
-      - ${NGINX_PORT_HTTP}:80
-      - ${NGINX_PORT_HTTPS}:443
-    volumes:
-      - ./:/var/www
-      - ./docker/nginx:/etc/nginx/conf.d/
     networks:
       - mynetwork
 
